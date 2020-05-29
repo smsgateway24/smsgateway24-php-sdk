@@ -36,7 +36,6 @@ Install the package via composer:
 ```bash
 composer require smsgateway24/smsgateway24-php-sdk
 ```
-enjoy :)
 
 ### API Methods
 
