@@ -1,0 +1,20 @@
+{
+    "name": "smsgateway24/smsgateway24-php-sdk",
+    "description": "php sdk for smsgateway24.com",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Igor Filippov",
+            "email": "thisfil@ya.ru"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "~6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SmsGateway24\\": "src/"
+        }
+    }
+}
