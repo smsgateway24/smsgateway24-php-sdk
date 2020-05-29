@@ -29,15 +29,16 @@ After that, the phone with the Smsgateway24 application calls the server and tak
 
 
 ### Getting Started
-Visit our [website](https://smsgateway24.com/), sign up and install app on your phone
+Visit our [website](https://smsgateway24.com/), sign up and install app on your phone. Get your API token and device id.
 
 
-You can install the package via composer:
+Install the package via composer:
 ```bash
 composer require smsgateway24/smsgateway24-php-sdk
 ```
+enjoy :)
 
-### Features
+### API Methods
 
 #### Add SMS to queue
 
