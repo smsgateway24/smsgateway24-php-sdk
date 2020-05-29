@@ -11,14 +11,14 @@ use SmsGateway24\DataObjects\SmsStatus;
 /**
  * Class SmsGateway24
  *
- * @link    https://smsgateway24.com/en/docs/apidocumentation
+ * @link https://smsgateway24.com/en/docs/apidocumentation
  *
  * @package SmsGateway24
  */
 class SmsGateway24
 {
     protected const DEFAULT_TIMEOUT = 3.0;
-    protected const BASE_URL = ' https://smsgateway24.com/getdata/';
+    protected const BASE_URL = 'https://smsgateway24.com/getdata/';
 
     /**
      * @var Client

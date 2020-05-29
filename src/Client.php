@@ -74,7 +74,7 @@ class Client
         $data['token'] = $this->token->value;
 
         try {
-            $response = $this->httpClient->request('GET', $this->baseUrl . $uri, [
+            $response = $this->httpClient->request('POST', $this->baseUrl . $uri, [
                 ($json ? 'json' : 'form_params') => $data
             ]);
         } catch (GuzzleException $exception) {
