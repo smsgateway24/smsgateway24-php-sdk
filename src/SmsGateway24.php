@@ -73,7 +73,7 @@ class SmsGateway24
         $apiMethod = 'addsms';
 
         $response = $this->client->post($apiMethod, [
-            'send_to' => $sendTo,
+            'sendto' => $sendTo,
             'body' => $body,
             'device_id' => $deviceId,
             'timetosend' => $timeToSend,
