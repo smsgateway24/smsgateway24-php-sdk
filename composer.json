@@ -10,11 +10,14 @@
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "~6.0"
+        "php": "^7.1",
+        "guzzlehttp/guzzle": "~6.0",
+
     },
     "autoload": {
         "psr-4": {
             "SmsGateway24\\": "src/"
         }
-    }
+    },
+    "minimum-stability": "stable"
 }
