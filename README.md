@@ -17,7 +17,7 @@ use \SmsGateway24\SmsGateway24;
 
 $gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
 
-$to = "+7 (900) 123 45-67";
+$to = "+79001234567";
 $message = "Hello, how are you?";
 $deviceId = 12345; // get it in your profile after app installation on your android
 
@@ -48,7 +48,7 @@ use \SmsGateway24\SmsGateway24;
 
 $gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
 
-$to = "+7 (900) 123 45-67";
+$to = "+79001234567";
 $message = "Hello, how are you?";
 $deviceId = 12345;
 $timeToSend = '2018-10-25 00:00:00'; // (optional) you can set the date when you want to send the message
