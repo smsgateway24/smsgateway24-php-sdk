@@ -27,3 +27,20 @@ You can install the package via composer:
 composer require smsgateway24/smsgateway24-php-sdk
 ```
 
+## Features
+
+### Add SMS to Queue
+
+```php
+use \SmsGateway24\SmsGateway24;
+
+$gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
+
+$to = "+7 (900) 123 45-67";
+$message = "Hello, how are you?";
+$deviceId = 12345;
+$timeToSend = '2018-10-25 00:00:00'; // (optional) you can set the date when you want to send the message
+$sim = 0; // (optional) if you phone have some sim cards you can choose which you want to use
+
+$gateway->addSms($to, $message, $deviceId, $timeToSend, $sim);
+```
