@@ -129,8 +129,32 @@ class SmsGateway24
         return new DeviceStatus($lastSeen, $deviceId, $title);
     }
 
+
     /**
-     * Add contacts for any tag.
+     * Add tag.
+     *
+     * The tag is needed to create a newsletter on a group of numbers. For example, tag * Employees *.
+     *
+     * @param string $title
+     *
+     * @return int
+     * @throws Exceptions\SDKException
+     */
+    public function saveTag(string $title): int
+    {
+        $apiMethod = 'savetag';
+
+        $response = $this->client->post($apiMethod, [
+            'title' => $title
+        ]);
+
+        return $response['tag_id'];
+    }
+
+    /**
+     * Add contacts with a tag
+     *
+     * Add contacts for any tag. For example, for the tag * Employees * your colleagues will perfectly fit.
      *
      * @param string $fullName
      * @param string $phone
@@ -150,5 +174,32 @@ class SmsGateway24
         ]);
 
         return $response['contact_id'];
+    }
+
+    /**
+     * Create a Newsletter
+     *
+     * Once you have created the tag, you can do the mailing on the tag phones.
+     *
+     * @param string           $title
+     * @param string           $deviceId
+     * @param string           $body
+     * @param string|int|int[] $tags
+     *
+     * @return int
+     * @throws Exceptions\SDKException
+     */
+    public function savePaket(string $title, string $deviceId, string $body, $tags): int
+    {
+        $apiMethod = 'savepaket';
+
+        $response = $this->client->post($apiMethod, [
+            'title' => $title,
+            'device_id' => $deviceId,
+            'body' => $body,
+            'tags' => is_array($tags) ? implode(',', $tags) : $tags
+        ]);
+
+        return $response['paket'];
     }
 }
