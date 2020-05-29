@@ -54,7 +54,9 @@ $deviceId = 12345;
 $timeToSend = '2018-10-25 00:00:00'; // (optional) you can set the date when you want to send the message
 $sim = 0; // (optional) if you phone have some sim cards you can choose which you want to use
 
-$gateway->addSms($to, $message, $deviceId, $timeToSend, $sim);
+$smsId = $gateway->addSms($to, $message, $deviceId, $timeToSend, $sim);
+
+echo $smsId;
 ```
 
 #### Get SMS status
@@ -67,6 +69,7 @@ use \SmsGateway24\SmsGateway24;
 $gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
 
 $smsId = 12345;
+
 $statusResult = $gateway->getSmsStatus($smsId);
 
 print_r($statusResult);
@@ -79,8 +82,60 @@ use \SmsGateway24\SmsGateway24;
 
 $gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
 
-$deviceId = 12345;
+$deviceId = 12345; // get it in your profile
+
 $statusResult = $gateway->getDeviceStatus($deviceId);
 
 print_r($statusResult);
+```
+
+#### Add Tag
+
+Add contacts for any tag. For example, for the tag * Employees * your colleagues will perfectly fit.
+
+```php
+use \SmsGateway24\SmsGateway24;
+
+$gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
+
+$tagId = $gateway->saveTag("Rich customers");
+
+echo $tagId;
+```
+
+#### Save Contact
+
+Add contacts for any tag. For example, for the tag * Employees * your colleagues will perfectly fit.
+
+```php
+use \SmsGateway24\SmsGateway24;
+
+$gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
+
+$contactName = 'John Doe';
+$phoneNum = '+79001233456';
+$tagId = 2456;
+
+$contactId = $gateway->saveContact($contactName, $phoneNum, $tagId);
+
+echo $contactId;
+```
+
+#### Create a Newsletter
+
+Once you have created the tag, you can do the mailing on the tag phones.
+
+```php
+use \SmsGateway24\SmsGateway24;
+
+$gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
+
+$paketTitle = 'some title';
+$deviceId = 1234; // get it in your profile
+$body = 'body text';
+$tags = [12, 13, 14]; // ids
+
+$paketId = $gateway->savePaket($paketTitle, $deviceId, $body, $tags);
+
+echo $paketId;
 ```
