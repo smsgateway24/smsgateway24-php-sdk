@@ -29,7 +29,7 @@ After that, the phone with the Smsgateway24 application calls the server and tak
 
 
 ### Getting Started
-[https://smsgateway24.com/ru/apps](our website)
+Visit our [website](https://smsgateway24.com/), sign up and install app on your phone
 
 
 You can install the package via composer:
