@@ -7,7 +7,7 @@ namespace SmsGateway24\DataObjects;
 class DeviceStatus
 {
     /**
-     * @var string
+     * @var LastSeenDate
      */
     public $lastseen;
 
@@ -24,11 +24,11 @@ class DeviceStatus
     /**
      * DeviceStatus constructor.
      *
-     * @param string $lastseen
-     * @param int    $device_id
-     * @param string $title
+     * @param LastSeenDate $lastseen
+     * @param int          $device_id
+     * @param string       $title
      */
-    public function __construct(string $lastseen, int $device_id, string $title)
+    public function __construct(LastSeenDate $lastseen, int $device_id, string $title)
     {
         $this->lastseen = $lastseen;
         $this->device_id = $device_id;
