@@ -139,3 +139,9 @@ $paketId = $gateway->savePaket($paketTitle, $deviceId, $body, $tags);
 
 echo $paketId;
 ```
+
+## Contributing
+Contributions are welcome!
+
+## Credits
+* [Igor Filippov](https://github.com/underwear/)
