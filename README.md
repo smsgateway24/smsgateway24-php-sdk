@@ -145,3 +145,4 @@ Contributions are welcome!
 
 ## Credits
 * [Igor Filippov](https://github.com/underwear/)
+* [Nikita Pushkar](https://github.com/nikitospush/)
