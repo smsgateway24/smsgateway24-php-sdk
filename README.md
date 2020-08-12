@@ -20,8 +20,11 @@ $gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
 $to = "+79001234567";
 $message = "Hello, how are you?";
 $deviceId = 12345; // get it in your profile after app installation on your android
+$customerid = 12; // Optional. your internal customer ID. 
+$urgent = 1; // Optional. 1 or 0 to make sms Urgent.  
 
-$gateway->addSms($to, $message, $deviceId);
+$gateway->addSms($to, $message, $deviceId, $customerid, $urgent);
+
 
 ```
 
