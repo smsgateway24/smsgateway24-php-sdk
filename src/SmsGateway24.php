@@ -6,12 +6,13 @@ namespace SmsGateway24;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\ClientInterface;
 use SmsGateway24\DataObjects\DeviceStatus;
+use SmsGateway24\DataObjects\LastSeenDate;
 use SmsGateway24\DataObjects\SmsStatus;
 
 /**
  * Class SmsGateway24
  *
- * @link https://smsgateway24.com/en/docs/apidocumentation
+ * @link    https://smsgateway24.com/en/docs/apidocumentation
  *
  * @package SmsGateway24
  */
@@ -129,9 +130,14 @@ class SmsGateway24
             'device_id' => $deviceId
         ]);
 
-        $lastSeen = $response['lastseen'];
+        $lastSeen = new LastSeenDate(
+            $response['lastseen']['date'],
+            $response['lastseen']['timezone_type'],
+            $response['lastseen']['timezone']
+        );
         $deviceId = $response['device_id'];
         $title = $response['title'];
+
 
         return new DeviceStatus($lastSeen, $deviceId, $title);
     }
