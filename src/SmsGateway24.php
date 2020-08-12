@@ -59,6 +59,8 @@ class SmsGateway24
      * @param string      $deviceId
      * @param string|null $timeToSend
      * @param int|null    $sim
+     * @param int|null    $customerId
+     * @param int|null    $urgent
      *
      * @return int
      * @throws Exceptions\SDKException
@@ -68,7 +70,9 @@ class SmsGateway24
         string $body,
         string $deviceId,
         ?string $timeToSend = null,
-        ?int $sim = null
+        ?int $sim = null,
+        ?int $customerId = null,
+        ?int $urgent = null
     ): int {
         $apiMethod = 'addsms';
 
@@ -77,7 +81,10 @@ class SmsGateway24
             'body' => $body,
             'device_id' => $deviceId,
             'timetosend' => $timeToSend,
-            'sim' => $sim
+            'sim' => $sim,
+            'customerId' => $customerId,
+            'urgent' => $urgent
+
         ]);
 
         return (int)$response['sms_id'];
