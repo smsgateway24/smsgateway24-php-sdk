@@ -10,8 +10,8 @@
         }
     ],
     "require": {
-        "php": "^7.1",
-        "guzzlehttp/guzzle": ">=6"
+        "php": ">=7.1",
+        "guzzlehttp/guzzle": "^7.0"
 
     },
     "autoload": {
