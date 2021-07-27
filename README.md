@@ -17,13 +17,14 @@ use \SmsGateway24\SmsGateway24;
 
 $gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
 
-$to = "+79001234567";
+$to = "+4915752982212";  // Also this is our Support number. Text us to WhatsApp
 $message = "Hello, how are you?";
 $deviceId = 12345; // get it in your profile after app installation on your android
 $customerid = 12; // Optional. your internal customer ID. 
 $urgent = 1; // Optional. 1 or 0 to make sms Urgent.  
-
-$gateway->addSms($to, $message, $deviceId, $customerid, $urgent);
+$sim=1;  // 0 or 1. For Dual SIM devices. (default sim = 0)
+$customerid=777; // your internal customer ID. 
+$gateway->addSms($to, $message, $deviceId, $customerid, $sim, $customerid, $urgent);
 
 
 ```
@@ -51,15 +52,16 @@ use \SmsGateway24\SmsGateway24;
 
 $gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
 
-$to = "+79001234567";
+$to = "+4915752982212";  // Also this is our Support number. Text us to WhatsApp
 $message = "Hello, how are you?";
-$deviceId = 12345;
-$timeToSend = '2018-10-25 00:00:00'; // (optional) you can set the date when you want to send the message
-$sim = 0; // (optional) if you phone have some sim cards you can choose which you want to use
+$deviceId = 12345; // get it in your profile after app installation on your android
+$customerid = 12; // Optional. your internal customer ID. 
+$urgent = 1; // Optional. 1 or 0 to make sms Urgent.  
+$sim=1;  // 0 or 1. For Dual SIM devices. (default sim = 0)
+$customerid=777; // your internal customer ID. 
+$smsId = $gateway->addSms($to, $message, $deviceId, $customerid, $sim, $customerid, $urgent);
 
-$smsId = $gateway->addSms($to, $message, $deviceId, $timeToSend, $sim);
-
-echo $smsId;
+echo $smsId; 
 ```
 
 #### Get SMS status
@@ -76,6 +78,21 @@ $smsId = 12345;
 $statusResult = $gateway->getSmsStatus($smsId);
 
 print_r($statusResult);
+/*
+Statuses values: 
+1 - New (just created)
+2 - Taken from Server.
+5 - Income
+6 - Sent by Phone
+7 - Delivered
+8 - Sms Not Delivered
+9 - Not SENT - Generic failure
+10 - Not sent - No service
+11 - Not Sent - Null PDU
+12 - Not Sent - Radio off
+100 - not sent - NOT ALLOWED
+101 - not sent - Not Allowed At all
+*/
 ```
 
 #### Get device status
@@ -115,8 +132,8 @@ use \SmsGateway24\SmsGateway24;
 
 $gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
 
-$contactName = 'John Doe';
-$phoneNum = '+79001233456';
+$contactName = 'Support SmsGateWay24';
+$phoneNum = '+4915752982212';
 $tagId = 2456;
 
 $contactId = $gateway->saveContact($contactName, $phoneNum, $tagId);

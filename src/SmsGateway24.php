@@ -77,6 +77,9 @@ class SmsGateway24
     ): int {
         $apiMethod = 'addsms';
 
+        if (!$sim){
+            $sim = 0;
+        }
         $response = $this->client->post($apiMethod, [
             'sendto' => $sendTo,
             'body' => $body,
