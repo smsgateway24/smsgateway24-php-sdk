@@ -29,7 +29,7 @@ class SmsGateway24
     /**
      * SmsGateway24 constructor.
      *
-     * @param string|Token         $token
+     * @param string|Token $token
      * @param ClientInterface|null $customGuzzleClient
      *
      */
@@ -55,13 +55,13 @@ class SmsGateway24
     /**
      * Creates SMS on the server to send.
      *
-     * @param string      $sendTo
-     * @param string      $body
-     * @param string      $deviceId
+     * @param string $sendTo
+     * @param string $body
+     * @param int $deviceId
      * @param string|null $timeToSend
-     * @param int|null    $sim
-     * @param int|null    $customerId
-     * @param int|null    $urgent
+     * @param int|null $sim
+     * @param int|null $customerId
+     * @param int|null $urgent
      *
      * @return int
      * @throws Exceptions\SDKException
@@ -69,15 +69,16 @@ class SmsGateway24
     public function addSms(
         string $sendTo,
         string $body,
-        string $deviceId,
+        int $deviceId,
         ?string $timeToSend = null,
         ?int $sim = null,
         ?int $customerId = null,
         ?int $urgent = null
-    ): int {
+    ): int
+    {
         $apiMethod = 'addsms';
 
-        if (!$sim){
+        if (!$sim) {
             $sim = 0;
         }
         $response = $this->client->post($apiMethod, [
@@ -97,12 +98,12 @@ class SmsGateway24
     /**
      * You can find out the status of each SMS using this method
      *
-     * @param string $smsId
+     * @param int $smsId
      *
      * @return SmsStatus
      * @throws Exceptions\SDKException
      */
-    public function getSmsStatus(string $smsId): SmsStatus
+    public function getSmsStatus(int $smsId): SmsStatus
     {
         $apiMethod = 'getsmsstatus';
 
@@ -174,7 +175,7 @@ class SmsGateway24
      *
      * @param string $fullName
      * @param string $phone
-     * @param int    $tagId
+     * @param int $tagId
      *
      * @return int
      * @throws Exceptions\SDKException
@@ -197,15 +198,15 @@ class SmsGateway24
      *
      * Once you have created the tag, you can do the mailing on the tag phones.
      *
-     * @param string           $title
-     * @param string           $deviceId
-     * @param string           $body
+     * @param string $title
+     * @param string $deviceId
+     * @param string $body
      * @param string|int|int[] $tags
      *
      * @return int
      * @throws Exceptions\SDKException
      */
-    public function savePaket(string $title, string $deviceId, string $body, $tags): int
+    public function savePaket(string $title, int $deviceId, string $body, $tags): int
     {
         $apiMethod = 'savepaket';
 
@@ -216,6 +217,7 @@ class SmsGateway24
             'tags' => is_array($tags) ? implode(',', $tags) : $tags
         ]);
 
-        return $response['paket'];
+        return $response['paket_id'];
     }
+
 }

@@ -19,5 +19,10 @@
             "SmsGateway24\\": "src/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "require-dev": {
+        "roave/backward-compatibility-check": "^5.0",
+        "phpunit/phpunit": "^9.5",
+        "symfony/test-pack": "^1.0"
+    }
 }
