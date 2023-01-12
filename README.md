@@ -9,6 +9,11 @@ PHP library for SmsGateWay24 API interaction.
 Requires:
 * PHP 7.1+
 
+Install sdk 
+```bash
+composer require smsgateway24/smsgateway24-php-sdk
+```
+
 Here's a demo of how you can use it:
 
 ```php
@@ -17,13 +22,13 @@ use \SmsGateway24\SmsGateway24;
 
 $gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
 
-$to = "+4915752982212";  // Also this is our Support number. Text us to WhatsApp
-$message = "Hello, how are you?";
-$deviceId = 10403; // get it in your profile after app installation on your android
-$timeToSend = "2022-01-12 00:00:00";
+$to = "+4915752982212";  //required. Target Phone number
+$message = "Hello, how are you?"; // required. Body Message. 
+$deviceId = 10403; //required.  get it in your profile after app installation on your android
+$sim=0;  // Optional. 0 or 1. For Dual SIM devices. (if you skip it -> default sim is  0)
+$timeToSend = "2022-01-12 00:00:00"; // Optional. time when you want to send SMS
 $customerid = 12; // Optional. your internal customer ID.
 $urgent = 1; // Optional. 1 or 0 to make sms Urgent.
-$sim=0;  // 0 or 1. For Dual SIM devices. (default sim = 0)
 $smsId = $gateway->addSms($to, $message, $deviceId, $timeToSend, $sim, $customerid, $urgent);
 
 
@@ -53,13 +58,13 @@ use \SmsGateway24\SmsGateway24;
 
 $gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
 
-$to = "+4915752982212";  // Also this is our Support number. Text us to WhatsApp
-$message = "Hello, how are you?";
-$deviceId = 10403; // get it in your profile after app installation on your android
-$timeToSend = "2022-01-12 00:00:00";
+$to = "+4915752982212";  //required. Target Phone number
+$message = "Hello, how are you?"; // required. Body Message. 
+$deviceId = 10403; //required.  get it in your profile after app installation on your android
+$sim=0;  // Optional. 0 or 1. For Dual SIM devices. (if you skip it -> default sim is  0)
+$timeToSend = "2022-01-12 00:00:00"; // Optional. time when you want to send SMS
 $customerid = 12; // Optional. your internal customer ID.
 $urgent = 1; // Optional. 1 or 0 to make sms Urgent.
-$sim=1;  // 0 or 1. For Dual SIM devices. (default sim = 0)
 $smsId = $gateway->addSms($to, $message, $deviceId, $timeToSend, $sim, $customerid, $urgent);
 
 
