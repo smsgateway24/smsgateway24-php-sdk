@@ -9,11 +9,6 @@ PHP library for SmsGateWay24 API interaction.
 Requires:
 * PHP 7.1+
 
-Install sdk 
-```bash
-composer require smsgateway24/smsgateway24-php-sdk
-```
-
 Here's a demo of how you can use it:
 
 ```php
@@ -88,17 +83,17 @@ print_r($statusResult);
 /*
 Statuses values: 
 1 - New (just created)
-2 - Taken from Server.
-5 - Income
-6 - Sent by Phone
-7 - Delivered
-8 - Sms Not Delivered
-9 - Not SENT - Generic failure
-10 - Not sent - No service
-11 - Not Sent - Null PDU
-12 - Not Sent - Radio off
-100 - not sent - NOT ALLOWED
-101 - not sent - Not Allowed At all
+2 - Taken from Server. The phone picked up the SMS from the server, but there is no information about the delivery yet. 
+5 - Income. 
+6 - Sent by Phone. Good status. The phone sent a text message. But there is no information about the delivery yet. 
+7 - Delivered. Good status. The phone texted and it was 100% delivered by the operator. The delivery status was sent to the server. (You need a webhook to your server - we have one! Write your server in the device settings on the website)
+8 - Sms Not Delivered. The text message was not delivered. This usually means that the SIM card is blocked or the balance is negative
+9 - Not SENT - Generic failure. The text message was not delivered. This usually means that the SIM card is blocked or the balance is negative
+10 - Not sent - No service. 
+11 - Not Sent - Null PD.
+12 - Not Sent - Radio off.
+100 - not sent - NOT ALLOWED. Click the permission button in the app
+101 - not sent - Not Allowed At all. Click the permission button in the app
 */
 ```
 
