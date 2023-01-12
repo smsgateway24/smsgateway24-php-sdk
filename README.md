@@ -19,12 +19,13 @@ $gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
 
 $to = "+4915752982212";  // Also this is our Support number. Text us to WhatsApp
 $message = "Hello, how are you?";
-$deviceId = 12345; // get it in your profile after app installation on your android
-$customerid = 12; // Optional. your internal customer ID. 
-$urgent = 1; // Optional. 1 or 0 to make sms Urgent.  
-$sim=1;  // 0 or 1. For Dual SIM devices. (default sim = 0)
-$customerid=777; // your internal customer ID. 
-$gateway->addSms($to, $message, $deviceId, $customerid, $sim, $customerid, $urgent);
+$deviceId = 10403; // get it in your profile after app installation on your android
+$timeToSend = "2022-01-12 00:00:00";
+$customerid = 12; // Optional. your internal customer ID.
+$urgent = 1; // Optional. 1 or 0 to make sms Urgent.
+$sim=0;  // 0 or 1. For Dual SIM devices. (default sim = 0)
+$smsId = $gateway->addSms($to, $message, $deviceId, $timeToSend, $sim, $customerid, $urgent);
+
 
 
 ```
