@@ -171,5 +171,5 @@ echo $paketId;
 Contributions are welcome!
 
 ## Credits
-* [Igor Filippov](https://github.com/underwear/)
-* [Nikita Pushkar](https://github.com/nikitospush/)
+* [Igor](https://github.com/underwear/)
+* [Nik](https://github.com/nikitospush/)
