@@ -84,6 +84,7 @@ print_r($statusResult);
 Statuses values: 
 1 - New (just created)
 2 - Taken from Server. The phone picked up the SMS from the server, but there is no information about the delivery yet. 
+3 - Queued for sending.
 5 - Income. 
 6 - Sent by Phone. Good status. The phone sent a text message. But there is no information about the delivery yet. 
 7 - Delivered. Good status. The phone texted and it was 100% delivered by the operator. The delivery status was sent to the server. (You need a webhook to your server - we have one! Write your server in the device settings on the website)
@@ -108,7 +109,8 @@ $deviceId = 12345; // get it in your profile
 
 $statusResult = $gateway->getDeviceStatus($deviceId);
 
-print_r($statusResult);
+echo $statusResult->title;          // connection state: "online", "recently" or "offline"
+echo $statusResult->lastseen->date; // last time the phone contacted the server
 ```
 
 #### Add Tag
@@ -156,10 +158,29 @@ $paketTitle = 'some title';
 $deviceId = 1234; // get it in your profile
 $body = 'body text';
 $tags = [12, 13, 14]; // ids
+$sim = 0; // Optional. Sim slot: 0 or 1 for SMS (2 - WhatsApp Business, 3 - WhatsApp Personal, 4/5 - RCS). Default 0
+$timeToSend = '2026-01-12 10:00:00'; // Optional. In your account time zone. Default: now
 
-$paketId = $gateway->savePaket($paketTitle, $deviceId, $body, $tags);
+$paketId = $gateway->savePaket($paketTitle, $deviceId, $body, $tags, $sim, $timeToSend);
 
 echo $paketId;
+```
+
+Don't forget to press "Start" in the app on your phone to begin the newsletter.
+
+### Error handling
+
+Every method throws `\SmsGateway24\Exceptions\SDKException` when the API reports an error
+(wrong token, unknown device, validation error, etc.) or when the request fails.
+
+```php
+use \SmsGateway24\Exceptions\SDKException;
+
+try {
+    $smsId = $gateway->addSms($to, $message, $deviceId);
+} catch (SDKException $e) {
+    echo $e->getMessage(); // e.g. "Device is not in your list"
+}
 ```
 
 ## Contributing

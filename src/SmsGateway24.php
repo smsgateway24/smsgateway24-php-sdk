@@ -8,6 +8,7 @@ use GuzzleHttp\ClientInterface;
 use SmsGateway24\DataObjects\DeviceStatus;
 use SmsGateway24\DataObjects\LastSeenDate;
 use SmsGateway24\DataObjects\SmsStatus;
+use SmsGateway24\Exceptions\SDKException;
 
 /**
  * Class SmsGateway24
@@ -18,7 +19,7 @@ use SmsGateway24\DataObjects\SmsStatus;
  */
 class SmsGateway24
 {
-    protected const DEFAULT_TIMEOUT = 3.0;
+    protected const DEFAULT_TIMEOUT = 10.0;
     protected const BASE_URL = 'https://smsgateway24.com/getdata/';
 
     /**
@@ -87,12 +88,11 @@ class SmsGateway24
             'device_id' => $deviceId,
             'timetosend' => $timeToSend,
             'sim' => $sim,
-            'customerId' => $customerId,
+            'customerid' => $customerId,
             'urgent' => $urgent
-
         ]);
 
-        return (int)$response['sms_id'];
+        return (int)$this->requireField($response, 'sms_id');
     }
 
     /**
@@ -111,11 +111,11 @@ class SmsGateway24
             'sms_id' => $smsId
         ]);
 
-        $smsId = $response['sms_id'];
-        $status = $response['status'];
-        $statusDescription = $response['status_description'];
-
-        return new SmsStatus($smsId, $status, $statusDescription);
+        return new SmsStatus(
+            (int)$this->requireField($response, 'sms_id'),
+            (int)$this->requireField($response, 'status'),
+            (string)($response['statusdescription'] ?? '')
+        );
     }
 
     /**
@@ -134,16 +134,24 @@ class SmsGateway24
             'device_id' => $deviceId
         ]);
 
+        $lastSeenRaw = $this->requireField($response, 'lastseen');
+        if (!is_array($lastSeenRaw) || !isset($lastSeenRaw['date'], $lastSeenRaw['timezone_type'], $lastSeenRaw['timezone'])) {
+            throw new SDKException("Unexpected smsgateway24 API response: malformed 'lastseen'");
+        }
+
         $lastSeen = new LastSeenDate(
-            $response['lastseen']['date'],
-            $response['lastseen']['timezone_type'],
-            $response['lastseen']['timezone']
+            (string)$lastSeenRaw['date'],
+            (int)$lastSeenRaw['timezone_type'],
+            (string)$lastSeenRaw['timezone']
         );
-        $deviceId = $response['device_id'];
-        $title = $response['title'];
 
-
-        return new DeviceStatus($lastSeen, $deviceId, $title);
+        return new DeviceStatus(
+            $lastSeen,
+            (int)$this->requireField($response, 'device_id'),
+            (string)$this->requireField($response, 'title'),
+            isset($response['color']) ? (string)$response['color'] : null,
+            isset($response['emoji']) ? (string)$response['emoji'] : null
+        );
     }
 
 
@@ -165,7 +173,7 @@ class SmsGateway24
             'title' => $title
         ]);
 
-        return $response['tag_id'];
+        return (int)$this->requireField($response, 'tag_id');
     }
 
     /**
@@ -190,7 +198,7 @@ class SmsGateway24
             'tag_id' => $tagId
         ]);
 
-        return $response['contact_id'];
+        return (int)$this->requireField($response, 'contact_id');
     }
 
     /**
@@ -198,26 +206,51 @@ class SmsGateway24
      *
      * Once you have created the tag, you can do the mailing on the tag phones.
      *
-     * @param string $title
-     * @param string $deviceId
-     * @param string $body
-     * @param string|int|int[] $tags
+     * @param string           $title
+     * @param int              $deviceId
+     * @param string           $body
+     * @param string|int|int[] $tags       tag id, comma-separated ids or array of ids
+     * @param int              $sim        sim slot: 0 or 1 for SMS (2 - WhatsApp Business, 3 - WhatsApp Personal, 4/5 - RCS)
+     * @param string|null      $timeToSend when to send, in your account time zone (e.g. "2026-01-12 10:00:00"). Default: now
      *
-     * @return int
+     * @return int newsletter (paket) id
      * @throws Exceptions\SDKException
      */
-    public function savePaket(string $title, int $deviceId, string $body, $tags): int
+    public function savePaket(string $title, int $deviceId, string $body, $tags, int $sim = 0, ?string $timeToSend = null): int
     {
         $apiMethod = 'savepaket';
 
         $response = $this->client->post($apiMethod, [
             'title' => $title,
             'device_id' => $deviceId,
+            'sim' => $sim,
             'body' => $body,
-            'tags' => is_array($tags) ? implode(',', $tags) : $tags
+            'tags' => is_array($tags) ? implode(',', $tags) : $tags,
+            'time_to_send' => $timeToSend
         ]);
 
-        return $response['paket_id'];
+        $id = $response['result']['data']['id'] ?? null;
+        if ($id === null) {
+            throw new SDKException("Unexpected smsgateway24 API response: newsletter id is missing");
+        }
+
+        return (int)$id;
+    }
+
+    /**
+     * @param array  $response
+     * @param string $field
+     *
+     * @return mixed
+     * @throws SDKException
+     */
+    protected function requireField(array $response, string $field)
+    {
+        if (!isset($response[$field])) {
+            throw new SDKException("Unexpected smsgateway24 API response: '" . $field . "' is missing");
+        }
+
+        return $response[$field];
     }
 
 }
