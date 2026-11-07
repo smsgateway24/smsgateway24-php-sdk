@@ -1,191 +1,236 @@
-# SmsGateWay24
+# SmsGateway24 PHP SDK
 
-SmsGateWay24 is a service that can turn you android phone to gateway and you can start sending messages throw it.
+[![Latest Version](https://img.shields.io/packagist/v/smsgateway24/smsgateway24-php-sdk.svg)](https://packagist.org/packages/smsgateway24/smsgateway24-php-sdk)
+[![PHP Version](https://img.shields.io/packagist/php-v/smsgateway24/smsgateway24-php-sdk.svg)](https://packagist.org/packages/smsgateway24/smsgateway24-php-sdk)
+[![License](https://img.shields.io/packagist/l/smsgateway24/smsgateway24-php-sdk.svg)](LICENSE)
 
-## PHP SDK
+The official PHP library for [SmsGateway24](https://smsgateway24.com): it turns your Android phone into an SMS gateway.
 
-PHP library for SmsGateWay24 API interaction.
-
-Requires:
-* PHP 7.1+
-
-Here's a demo of how you can use it:
+Your code puts a message in the queue. The SmsGateway24 app on your phone picks it up and sends it from your own SIM card.
 
 ```php
+$gateway = new \SmsGateway24\SmsGateway24('your-api-token');
 
-use \SmsGateway24\SmsGateway24;
-
-$gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
-
-$to = "+4915752982212";  //required. Target Phone number
-$message = "Hello, how are you?"; // required. Body Message. 
-$deviceId = 10403; //required.  get it in your profile after app installation on your android
-$sim=0;  // Optional. 0 or 1. For Dual SIM devices. (if you skip it -> default sim is  0)
-$timeToSend = "2022-01-12 00:00:00"; // Optional. time when you want to send SMS
-$customerid = 12; // Optional. your internal customer ID.
-$urgent = 1; // Optional. 1 or 0 to make sms Urgent.
-$smsId = $gateway->addSms($to, $message, $deviceId, $timeToSend, $sim, $customerid, $urgent);
-
-
-
+$smsId = $gateway->addSms('+4915752982212', 'Hello from PHP!', 10403);
 ```
 
-After that, the phone with the Smsgateway24 application calls the server and takes the SMS and sends it from your sim card.
+---
 
+## Contents
 
-### Getting Started
-Visit our [website](https://smsgateway24.com/), sign up and install app on your phone. Get your API token and device id.
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Before you start](#before-you-start)
+- [Sending SMS](#sending-sms)
+- [Checking SMS status](#checking-sms-status)
+- [Checking a device](#checking-a-device)
+- [Contacts and tags](#contacts-and-tags)
+- [Newsletters](#newsletters)
+- [Error handling](#error-handling)
+- [Configuring the HTTP client](#configuring-the-http-client)
+- [SMS status codes](#sms-status-codes)
+- [Useful links](#useful-links)
 
+## Requirements
 
-Install the package via composer:
+- PHP 7.2.5 or newer
+- [Guzzle](https://github.com/guzzle/guzzle) 7 (installed automatically)
+- An Android phone with the [SmsGateway24 app](https://smsgateway24.com) installed
+
+## Installation
+
 ```bash
 composer require smsgateway24/smsgateway24-php-sdk
 ```
 
-### API Methods
+## Before you start
 
-#### Add SMS to queue
+You need two values from your SmsGateway24 account:
 
-Creates SMS on the server to send.
+| What | Where to find it |
+|------|------------------|
+| **API token** | Profile menu → **API tokens** ([open](https://smsgateway24.com/en/token/list)) |
+| **Device ID** | **Devices** page ([open](https://smsgateway24.com/en/device/list)), after the app is installed and signed in on your phone |
+
+Create the gateway once and reuse it:
 
 ```php
-use \SmsGateway24\SmsGateway24;
+use SmsGateway24\SmsGateway24;
 
-$gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
-
-$to = "+4915752982212";  //required. Target Phone number
-$message = "Hello, how are you?"; // required. Body Message. 
-$deviceId = 10403; //required.  get it in your profile after app installation on your android
-$sim=0;  // Optional. 0 or 1. For Dual SIM devices. (if you skip it -> default sim is  0)
-$timeToSend = "2022-01-12 00:00:00"; // Optional. time when you want to send SMS
-$customerid = 12; // Optional. your internal customer ID.
-$urgent = 1; // Optional. 1 or 0 to make sms Urgent.
-$smsId = $gateway->addSms($to, $message, $deviceId, $timeToSend, $sim, $customerid, $urgent);
-
-
-echo $smsId; 
+$gateway = new SmsGateway24('your-api-token');
 ```
 
-#### Get SMS status
-
-You can find out the status of each SMS using this method
+## Sending SMS
 
 ```php
-use \SmsGateway24\SmsGateway24;
+$smsId = $gateway->addSms(
+    '+4915752982212',      // recipient phone number, international format
+    'Hello, how are you?', // message text
+    10403                  // device ID
+);
 
-$gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
-
-$smsId = 12345;
-
-$statusResult = $gateway->getSmsStatus($smsId);
-
-print_r($statusResult);
-/*
-Statuses values: 
-1 - New (just created)
-2 - Taken from Server. The phone picked up the SMS from the server, but there is no information about the delivery yet. 
-3 - Queued for sending.
-5 - Income. 
-6 - Sent by Phone. Good status. The phone sent a text message. But there is no information about the delivery yet. 
-7 - Delivered. Good status. The phone texted and it was 100% delivered by the operator. The delivery status was sent to the server. (You need a webhook to your server - we have one! Write your server in the device settings on the website)
-8 - Sms Not Delivered. The text message was not delivered. This usually means that the SIM card is blocked or the balance is negative
-9 - Not SENT - Generic failure. The text message was not delivered. This usually means that the SIM card is blocked or the balance is negative
-10 - Not sent - No service. 
-11 - Not Sent - Null PD.
-12 - Not Sent - Radio off.
-100 - not sent - NOT ALLOWED. Click the permission button in the app
-101 - not sent - Not Allowed At all. Click the permission button in the app
-*/
+echo "Queued, SMS ID: $smsId";
 ```
 
-#### Get device status
+Keep the returned ID: you'll need it to [check the delivery status](#checking-sms-status).
+
+All parameters:
 
 ```php
-use \SmsGateway24\SmsGateway24;
-
-$gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
-
-$deviceId = 12345; // get it in your profile
-
-$statusResult = $gateway->getDeviceStatus($deviceId);
-
-echo $statusResult->title;          // connection state: "online", "recently" or "offline"
-echo $statusResult->lastseen->date; // last time the phone contacted the server
+$smsId = $gateway->addSms(
+    '+4915752982212',      // $sendTo      required
+    'Your code is 4821',   // $body        required
+    10403,                 // $deviceId    required
+    '2026-12-31 23:59:00', // $timeToSend  optional — when to send, in your account time zone. Default: now
+    1,                     // $sim         optional — SIM slot: 0 or 1. Default: 0
+    12345,                 // $customerId  optional — your own ID (e.g. order or customer ID), returned with the SMS
+    1                      // $urgent      optional — 1 marks the SMS as urgent (OTP, high-priority traffic)
+);
 ```
 
-#### Add Tag
-
-Add contacts for any tag. For example, for the tag * Employees * your colleagues will perfectly fit.
+Want to skip some optional parameters? Pass `null` for them:
 
 ```php
-use \SmsGateway24\SmsGateway24;
-
-$gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
-
-$tagId = $gateway->saveTag("Rich customers");
-
-echo $tagId;
+// Send from SIM 2 right now
+$gateway->addSms('+4915752982212', 'Hi!', 10403, null, 1);
 ```
 
-#### Save Contact
-
-Add contacts for any tag. For example, for the tag * Employees * your colleagues will perfectly fit.
+## Checking SMS status
 
 ```php
-use \SmsGateway24\SmsGateway24;
+$status = $gateway->getSmsStatus($smsId);
 
-$gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
-
-$contactName = 'Support SmsGateWay24';
-$phoneNum = '+4915752982212';
-$tagId = 2456;
-
-$contactId = $gateway->saveContact($contactName, $phoneNum, $tagId);
-
-echo $contactId;
+echo $status->sms_id;             // 555
+echo $status->status;             // 7
+echo $status->status_description; // "delivered"
 ```
 
-#### Create a Newsletter
+See [SMS status codes](#sms-status-codes) for the meaning of each code.
 
-Once you have created the tag, you can do the mailing on the tag phones.
+> **Tip:** instead of polling, set up a [delivery status webhook](https://smsgateway24.com/en/docs/webhook) in the device settings. Our server will notify yours whenever a status changes.
+
+## Checking a device
+
+Find out whether a phone is online and ready to send:
 
 ```php
-use \SmsGateway24\SmsGateway24;
+$device = $gateway->getDeviceStatus(10403);
 
-$gateway = new SmsGateway24('your-api-token-here'); // get it in your profile
-
-$paketTitle = 'some title';
-$deviceId = 1234; // get it in your profile
-$body = 'body text';
-$tags = [12, 13, 14]; // ids
-$sim = 0; // Optional. Sim slot: 0 or 1 for SMS (2 - WhatsApp Business, 3 - WhatsApp Personal, 4/5 - RCS). Default 0
-$timeToSend = '2026-01-12 10:00:00'; // Optional. In your account time zone. Default: now
-
-$paketId = $gateway->savePaket($paketTitle, $deviceId, $body, $tags, $sim, $timeToSend);
-
-echo $paketId;
+echo $device->title;          // "online", "recently" or "offline"
+echo $device->lastseen->date; // last time the phone contacted the server, e.g. "2026-11-07 10:00:00.000000"
 ```
 
-Don't forget to press "Start" in the app on your phone to begin the newsletter.
+| `title`    | Meaning                                    |
+|------------|--------------------------------------------|
+| `online`   | Seen in the last 100 seconds               |
+| `recently` | Seen in the last 10 minutes                |
+| `offline`  | Not seen for more than 10 minutes          |
 
-### Error handling
+## Contacts and tags
 
-Every method throws `\SmsGateway24\Exceptions\SDKException` when the API reports an error
-(wrong token, unknown device, validation error, etc.) or when the request fails.
+Tags group your contacts (for example *Employees* or *VIP customers*) so you can send a [newsletter](#newsletters) to the whole group at once.
 
 ```php
-use \SmsGateway24\Exceptions\SDKException;
+// 1. Create a tag
+$tagId = $gateway->saveTag('VIP customers');
+
+// 2. Add contacts to it
+$gateway->saveContact('Anna Schmidt', '+4915752982212', $tagId);
+$gateway->saveContact('Max Müller', '+4915111111111', $tagId);
+```
+
+Both methods return the ID of the created record.
+
+## Newsletters
+
+Send one message to every contact in one or more tags:
+
+```php
+$newsletterId = $gateway->savePaket(
+    'Black Friday',              // $title       required — shown only to you
+    10403,                       // $deviceId    required
+    '-30% on everything today!', // $body        required
+    [12, 13],                    // $tags        required — tag ID, array of IDs or "12,13"
+    0,                           // $sim         optional — SIM slot. Default: 0
+    '2026-11-27 10:00:00'        // $timeToSend  optional — in your account time zone. Default: now
+);
+```
+
+> **Important:** a newsletter does not start by itself. Open the SmsGateway24 app on your phone and tap **Start**.
+
+## Error handling
+
+When something goes wrong, every method throws `SmsGateway24\Exceptions\SDKException`. That covers a wrong token, an unknown device, an inactive subscription, invalid input or a network error. The exception message is the error text returned by the API:
+
+```php
+use SmsGateway24\Exceptions\SDKException;
 
 try {
-    $smsId = $gateway->addSms($to, $message, $deviceId);
+    $smsId = $gateway->addSms('+4915752982212', 'Hello!', 10403);
 } catch (SDKException $e) {
-    echo $e->getMessage(); // e.g. "Device is not in your list"
+    error_log('SMS was not queued: ' . $e->getMessage());
+    // e.g. "Device is not in your list"
+    //      "Device is not available for sending sms. Subscription is not active"
 }
 ```
 
+If the server responds with an HTTP error, `$e->getCode()` contains the HTTP status code.
+
+## Configuring the HTTP client
+
+The default timeout is 10 seconds. To change it, or to use a proxy or your own middleware, pass your own Guzzle client:
+
+```php
+use GuzzleHttp\Client;
+use SmsGateway24\SmsGateway24;
+
+$http = new Client([
+    'timeout' => 30,
+    'proxy'   => 'http://proxy.local:3128',
+]);
+
+$gateway = new SmsGateway24('your-api-token', $http);
+```
+
+## SMS status codes
+
+`status` is the code, `status_description` is a short machine-friendly name.
+
+| Code | `status_description` | Meaning |
+|-----:|----------------------|---------|
+| 1 | `pending` | Created, waiting for the phone |
+| 2 | `processing` | The phone downloaded the SMS, no delivery info yet |
+| 3 | `queue` | Queued for sending |
+| 5 | `income` | An incoming SMS received by your phone |
+| 6 | `sent` | ✅ The phone sent the SMS, no delivery report yet |
+| 7 | `delivered` | ✅ The carrier confirmed delivery |
+| 8 | `not delivered` | ❌ Sent, but the carrier did not deliver it |
+| 9 | `failed` | ❌ Generic failure: usually a blocked SIM or no balance. [What to do](https://smsgateway24.com/en/docs/generic_failure) |
+| 10 | `failed` | ❌ No mobile network |
+| 11 | `failed` | ❌ Null PDU: the message could not be encoded |
+| 12 | `failed` | ❌ Radio is off (airplane mode) |
+| 100, 101 | `failed` | ❌ Android blocked sending to a short or premium number. Allow it on the phone |
+
+## Useful links
+
+- [SmsGateway24 website](https://smsgateway24.com)
+- [API documentation](https://smsgateway24.com/en/docs/device) for calling the HTTP API directly
+- [Webhooks](https://smsgateway24.com/en/docs/webhook)
+
 ## Contributing
-Contributions are welcome!
+
+Issues and pull requests are welcome. To run the tests:
+
+```bash
+composer install
+vendor/bin/phpunit tests
+```
 
 ## Credits
-* [Igor](https://github.com/underwear/)
-* [Nik](https://github.com/nikitospush/)
+
+- [Igor](https://github.com/underwear/)
+- [Nik](https://github.com/nikitospush/)
+
+## License
+
+MIT. See [LICENSE](LICENSE).
